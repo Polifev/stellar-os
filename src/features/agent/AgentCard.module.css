@@ -1,0 +1,6 @@
+.agentCard {
+    border: 1px solid var(--foreground-color);
+    text-align: end;
+    padding: 6px;
+    margin: 20px;
+}
