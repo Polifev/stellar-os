@@ -1,52 +1,26 @@
-import axios, { AxiosInstance, AxiosRequestConfig } from "axios";
+import axios from 'axios'
+import {
+    Configuration,
+} from '../../spacetraders-sdk'
 
-const BASE_URL = "https://api.spacetraders.io/v2";
+export const configuration = new Configuration({
+    accessToken: localStorage.getItem("spacetraders-api-token") ?? undefined
+});
 
-interface ApiConfig extends AxiosRequestConfig {
-    authToken: string;
-}
+export const instance = axios.create({})
 
-export interface SpaceTradersApiResponse<T> {
-    data: T
-}
+instance.interceptors.response.use(undefined, async (error) => {
+    const apiError = error.response?.data?.error;
 
-export interface Agent {
-    accountId: string
-    symbol: string,
-    headquarters: string,
-    credits: string
-}
+    if (error.response?.status === 429) {
+        const retryAfter = error.response.headers['retry-after']
 
-class Api {
-    private axiosInstance: AxiosInstance;
-
-    constructor() {
-        this.axiosInstance = axios.create({
-            baseURL: BASE_URL,
+        await new Promise((resolve) => {
+            setTimeout(resolve, retryAfter * 1000);
         });
+
+        return instance.request(error.config);
     }
 
-    public setAuthToken(token: string) {
-        this.axiosInstance.defaults.headers.common.Authorization = `Bearer ${token}`;
-    }
-
-    public async get<T>(url: string, config?: ApiConfig): Promise<T> {
-        return (await this.axiosInstance.get<SpaceTradersApiResponse<T>>(url, config).then((response) => response.data)).data;
-    }
-
-    public async post<T>(url: string, data: any, config?: ApiConfig): Promise<T> {
-        return (await this.axiosInstance.post<SpaceTradersApiResponse<T>>(url, data, config).then((response) => response.data)).data;
-    }
-}
-
-export async function fetchMyAgent(token: string): [] {
-    const api = new Api();
-    api.setAuthToken(token);
-    try {
-        const agent = await api.get<Agent>("my/agent");
-        return agent;
-    } catch(err) {
-        console.error(err);
-        return null;
-    }
-}
+    throw error;
+});

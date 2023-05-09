@@ -23,4 +23,14 @@ input {
 
 button {
     border: 1px solid var(--foreground-color);
+    background-color: var(--darker-color);
+    color: var(--foreground-color);
+}
+
+button:hover {
+    cursor: pointer;
+    transition: 0.3s;
+    border: 1px solid var(--darker-color);
+    background-color: var(--foreground-color);
+    color: var(--darker-color);
 }

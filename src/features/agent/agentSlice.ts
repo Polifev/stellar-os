@@ -1,9 +1,10 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState, AppThunk } from "../../app/store";
-import { Agent, fetchMyAgent } from "./agentAPI";
+import { AgentsApi } from "../../spacetraders-sdk";
+import { configuration, instance } from "./agentAPI";
 
 export interface AgentState {
-    agent: Agent | null;
+    agent: any;
     status: "unauthorized" | "authorized";
     token: string;
 }
@@ -17,7 +18,10 @@ const initialState: AgentState = {
 export const getMyAgentAsync = createAsyncThunk(
     "agent/getMyAgent",
     async (token: string) => {
-        return await fetchMyAgent(token);
+        const agentAPI = new AgentsApi(configuration, undefined, instance);
+        const response =  await agentAPI.getMyAgent();
+        const agentData = response.data;
+        return agentData.data;
     }
 );
 
@@ -31,8 +35,7 @@ export const agentSlice = createSlice({
             })
             .addCase(getMyAgentAsync.fulfilled, (state, action) => {
                 state.status = "authorized";
-                state.agent = action.payload.agent;
-                state.token = action.payload.token;
+                state.agent = action.payload;
             })
             .addCase(getMyAgentAsync.rejected, (state) => {
                 state.status = "unauthorized";

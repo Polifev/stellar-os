@@ -1,8 +1,8 @@
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { Agent } from "./agentAPI";
 import { getMyAgentAsync, selectAgent } from "./agentSlice";
 import styles from "./AgentCard.module.css"
 import { useState } from "react";
+import { Agent } from "../../spacetraders-sdk";
 
 export function AgentCard() {
     const agent: Agent|null = useAppSelector(selectAgent);
@@ -14,7 +14,6 @@ export function AgentCard() {
             {
                 (agent == null) ?
                 <>
-                    <input type="password" value={token} onChange={e => setToken(e.target.value)}/>
                     <button onClick={() => dispatch(getMyAgentAsync(token))}>
                         Load agent
                     </button>
