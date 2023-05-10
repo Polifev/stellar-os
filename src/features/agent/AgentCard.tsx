@@ -27,7 +27,6 @@ export function AgentCard() {
                     </div>
                 </>
             }
-            
         </div>
     </div>);
 }

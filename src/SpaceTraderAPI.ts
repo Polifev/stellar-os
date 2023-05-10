@@ -1,7 +1,7 @@
 import axios from 'axios'
 import {
     Configuration,
-} from '../../spacetraders-sdk'
+} from './spacetraders-sdk'
 
 export const configuration = new Configuration({
     accessToken: localStorage.getItem("spacetraders-api-token") ?? undefined

@@ -1,11 +1,13 @@
 import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
 import counterReducer from "../features/counter/counterSlice";
 import agentReducer from "../features/agent/agentSlice";
+import shipReducer from "../features/ship/shipSlice";
 
 export const store = configureStore({
   reducer: {
     counter: counterReducer,
     agent: agentReducer,
+    ship: shipReducer
   },
 });
 
